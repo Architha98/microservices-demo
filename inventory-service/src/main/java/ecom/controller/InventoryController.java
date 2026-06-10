@@ -1,19 +1,36 @@
 package ecom.controller;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import ecom.entity.Inventory;
+import ecom.service.InventoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/inventory")
 public class InventoryController {
 
-    @GetMapping("/{productId}")
-    public String checkInventory(@PathVariable String productId){
-        System.out.println("CHECK " + productId);
-        return productId.equals("1")? "IN STOCK" : "OUT OF STOCK";
+    @Autowired
+    private InventoryService inventoryService;
 
+    @GetMapping("/{productId}")
+    public Inventory getInventory(@PathVariable Long productId){
+        return inventoryService.checkStock(productId);
     }
+
+    @PostMapping
+    public String addProduct(@RequestBody Inventory inventory){
+        return inventoryService.addProduct(inventory);
+    }
+
+    @PutMapping
+    public String updateProduct(@RequestBody Inventory inventory){
+        return inventoryService.updateProduct(inventory);
+    }
+
+    @DeleteMapping
+    public void deleteProduct(Long productId){
+        inventoryService.deleteProduct(productId);
+    }
+
 }
